@@ -3,5 +3,6 @@
     public static class Table
     {
         public const string TEMPERATURE_RECORDINGS_AIR = "AirTemperatureRecordings";
+        public const string TEMPERATURE_RECORDINGS_WATER = "WaterTemperatureRecordings";
     }
 }

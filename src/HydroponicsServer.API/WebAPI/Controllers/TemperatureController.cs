@@ -38,9 +38,14 @@ namespace HydroponicsServer.Controllers
                         tableName = Table.TEMPERATURE_RECORDINGS_AIR;
                         break;
                     }
+                case "WATER":
+                    {
+                        tableName = Table.TEMPERATURE_RECORDINGS_WATER;
+                        break;
+                    }
 
                 default:
-                    throw new Exception($"Invalid recording type '{requestObj.Type}'");
+                    return BadRequest($"Unknown type '{requestObj.Type}'");
             }
 
             await _db.Add(tableName, new TemperatureRecording(time, requestObj.Temperature, requestObj.Zone));

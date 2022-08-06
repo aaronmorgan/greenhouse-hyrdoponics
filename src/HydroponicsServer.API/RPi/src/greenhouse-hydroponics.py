@@ -13,6 +13,8 @@ import RPi.GPIO as GPIO
 
 from grove_rgb_lcd import *
 
+import ds18b20_temperature_sensor
+
 def myconverter(o):
     if isinstance(o, datetime.datetime):
         return o.__str__()
@@ -47,7 +49,6 @@ GPIO.setup(led, GPIO.OUT, initial=GPIO.LOW)
 
 data = {
     'temperature': 0.0,
-    'type': 'air',
     'zone': 'Greenhouse'
 }
 
@@ -55,24 +56,33 @@ headers = {'content-type': 'application/json', 'Accept': 'application/json'}
 
 while True:
     try:
-        temp_sensor = grovepi.temp(airTempSensorPort, '1.2')
-        print(str(temp_sensor))
+        air_temp_sensor = grovepi.temp(airTempSensorPort, '1.2')
+        print(str(air_temp_sensor))
 
-        setText("Temp: " + str(round(temp_sensor, 2)))
+        water_temp = ds18b20_temperature_sensor.read_temp()
+        print(water_temp)
+
+        setText("Temp: " + str(round(air_temp_sensor, 2)))
         setRGB(0,128,64)
 
         data['time'] = datetime.datetime.now()
-        data['temperature'] = temp_sensor
+        data['temperature'] = air_temp_sensor
+        data['type'] = 'air'
 
         GPIO.output(led, GPIO.HIGH) # Turn the LED on while transmitting.
 
-        response = requests.post(host_url,
-                          data=json.dumps(data, default=myconverter), headers=headers)
+        response = requests.post(host_url, data=json.dumps(data, default=myconverter), headers=headers)
 
         if response.status_code != 200:
           print(response.status_code, response.reason)
 
-        # grovepi.digitalWrite(led, LED_OFF)
+        data['temperature'] = water_temp
+        data['type'] = 'water'
+
+        response = requests.post(host_url, data=json.dumps(data, default=myconverter), headers=headers)
+
+        if response.status_code != 200:
+          print(response.status_code, response.reason)
 
     except ValueError:
         print ("Math Error");
