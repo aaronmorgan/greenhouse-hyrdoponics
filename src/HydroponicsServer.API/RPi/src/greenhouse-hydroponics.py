@@ -2,8 +2,6 @@
 
 import os
 import sys
-import json
-import requests
 import datetime
 
 import time
@@ -13,29 +11,14 @@ import RPi.GPIO as GPIO
 
 from grove_rgb_lcd import *
 
+import rest_client
 import ds18b20_temperature_sensor
 
-def myconverter(o):
-    if isinstance(o, datetime.datetime):
-        return o.__str__()
-
 sleep_period = float(os.getenv('TEMP_SLEEP_SECONDS'))
-host_url = os.getenv('AIR_TEMP_HOST_URL')
-
-print("TEMP_SLEEP_SECONDS: " + str(sleep_period))
-print("AIR_TEMP_HOST_URL: " + str(host_url))
-print("")
 
 if sleep_period is None:
     sleep_period = 120
     print ("Error: TEMP_SLEEP_SECONDS is not set, using default value of " + str(sleep_period) + " seconds")
-
-if host_url is None:
-    print ("Error: AIR_TEMP_HOST_URL is not set, using defaults")
-    sys.exit()
-
-LED_ON = 1
-LED_OFF = 0
 
 # Temperature sensor.
 airTempSensorPort = 14
@@ -52,7 +35,6 @@ data = {
     'zone': 'Greenhouse'
 }
 
-headers = {'content-type': 'application/json', 'Accept': 'application/json'}
 
 while True:
     try:
@@ -71,18 +53,19 @@ while True:
 
         GPIO.output(led, GPIO.HIGH) # Turn the LED on while transmitting.
 
-        response = requests.post(host_url, data=json.dumps(data, default=myconverter), headers=headers)
+        rest_client.post({
+            'time': datetime.datetime.now(),
+            'temperature': air_temp_sensor,
+            'type': 'air',
+            'zone': 'Greenhouse'
+        })
 
-        if response.status_code != 200:
-          print(response.status_code, response.reason)
-
-        data['temperature'] = water_temp
-        data['type'] = 'water'
-
-        response = requests.post(host_url, data=json.dumps(data, default=myconverter), headers=headers)
-
-        if response.status_code != 200:
-          print(response.status_code, response.reason)
+        rest_client.post({
+            'time': datetime.datetime.now(),
+            'temperature': water_temp,
+            'type': 'water',
+            'zone': 'Greenhouse'
+        })
 
     except ValueError:
         print ("Math Error");
