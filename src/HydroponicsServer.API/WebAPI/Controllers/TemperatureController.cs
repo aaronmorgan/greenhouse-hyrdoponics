@@ -1,5 +1,6 @@
 ﻿using DAL.PostgresSQL;
 using HydroponicsServer.Models;
+using HydroponicsServer.WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

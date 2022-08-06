@@ -3,12 +3,6 @@ import json
 import requests
 import datetime
 
-host_url = os.getenv('TEMP_HOST_URL')
-
-if host_url is None:
-    print ("Error: AIR_TEMP_HOST_URL is not set, using defaults")
-    sys.exit()
-
 def dateTimeConverter(o):
     if isinstance(o, datetime.datetime):
         return o.__str__()
@@ -19,9 +13,9 @@ headers = {
 }
 
 
-def post(data):
+def post(route, data):
     try:
-        response = requests.post(host_url, data=json.dumps(data, default=dateTimeConverter), headers=headers)
+        response = requests.post(route, data=json.dumps(data, default=dateTimeConverter), headers=headers)
 
         if response.status_code != 200:
             print(response.status_code, response.reason)
