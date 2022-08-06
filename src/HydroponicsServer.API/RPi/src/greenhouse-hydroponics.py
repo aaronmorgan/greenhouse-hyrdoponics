@@ -9,8 +9,6 @@ import grovepi
 
 import RPi.GPIO as GPIO
 
-from grove_rgb_lcd import *
-
 import rest_client
 import ds18b20_temperature_sensor
 import ina219_sensor
@@ -37,18 +35,18 @@ led = 11
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(led, GPIO.OUT, initial=GPIO.LOW)
 
-
 while True:
     try:
+        time.sleep(polling_period_seconds)
+        print('Gathering data...\n')
+
         air_temp_sensor = grovepi.temp(airTempSensorPort, '1.2')
         print('Room Temperature: {}'.format(str(air_temp_sensor)))
 
         water_temp = ds18b20_temperature_sensor.read_temp()
         print('Water Temperature: {}'.format(water_temp))
 
-        setText("Temp: " + str(round(air_temp_sensor, 2)))
-        setRGB(0,128,64)
-
+        print()
         GPIO.output(led, GPIO.HIGH) # Turn the LED on while transmitting.
 
         rest_client.post(
@@ -69,7 +67,6 @@ while True:
                 'zone': 'Greenhouse'
             })
 
-        print()
         ina219_data = ina219_sensor.get_state()
 
         if ina219_data is not None:
@@ -88,5 +85,4 @@ while True:
         print("Error")
     finally:
         GPIO.output(led, GPIO.LOW)
-        time.sleep(polling_period_seconds)
-        print('--- END ---')
+        print('--- END ---\n')
