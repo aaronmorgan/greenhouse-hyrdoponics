@@ -29,7 +29,8 @@ builder.Host.ConfigureServices((context, services) =>
       });
 
     services
-        .AddSingleton<ITemperatureRepository, TemperatureRepository>();
+        .AddSingleton<ITemperatureRepository, TemperatureRepository>()
+        .AddSingleton<IINA219Repository, INA219Repository>();
 });
 
 var app = builder.Build();

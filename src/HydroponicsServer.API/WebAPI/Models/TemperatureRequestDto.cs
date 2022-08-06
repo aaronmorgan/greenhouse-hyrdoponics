@@ -1,4 +1,4 @@
-﻿namespace HydroponicsServer.Models
+﻿namespace HydroponicsServer.WebAPI.Models
 {
     public class TemperatureRequestDto
     {
