@@ -30,11 +30,6 @@ led = 11
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(led, GPIO.OUT, initial=GPIO.LOW)
 
-data = {
-    'temperature': 0.0,
-    'zone': 'Greenhouse'
-}
-
 
 while True:
     try:
@@ -46,10 +41,6 @@ while True:
 
         setText("Temp: " + str(round(air_temp_sensor, 2)))
         setRGB(0,128,64)
-
-        data['time'] = datetime.datetime.now()
-        data['temperature'] = air_temp_sensor
-        data['type'] = 'air'
 
         GPIO.output(led, GPIO.HIGH) # Turn the LED on while transmitting.
 
