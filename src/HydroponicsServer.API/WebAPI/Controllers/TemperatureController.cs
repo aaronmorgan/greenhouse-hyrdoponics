@@ -2,6 +2,7 @@
 using HydroponicsServer.Models;
 using HydroponicsServer.WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Prometheus;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -16,6 +17,9 @@ namespace HydroponicsServer.Controllers
 
         private static readonly DateTime UnixEpoch = new(1970, 1, 1);
         public static long GetTime(DateTime dateTime) => (long)(dateTime.ToUniversalTime() - UnixEpoch).TotalMilliseconds;
+
+        private static readonly Gauge AirTemperature = Metrics.CreateGauge("air_temperature", "Current air temperature");
+        private static readonly Gauge WaterTemperature = Metrics.CreateGauge("water_temperature", "Current temperature of the water reservoir");
 
         public TemperatureController(ITemperatureRepository databaseAgent)
         {
@@ -36,11 +40,13 @@ namespace HydroponicsServer.Controllers
             {
                 case "AIR":
                     {
+                        AirTemperature.Set(requestObj.Temperature);
                         tableName = Table.TEMPERATURE_RECORDINGS_AIR;
                         break;
                     }
                 case "WATER":
                     {
+                        WaterTemperature.Set(requestObj.Temperature);
                         tableName = Table.TEMPERATURE_RECORDINGS_WATER;
                         break;
                     }
