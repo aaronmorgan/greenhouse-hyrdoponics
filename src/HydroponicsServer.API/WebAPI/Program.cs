@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,7 @@ builder.Host.ConfigureServices((context, services) =>
     services
       .AddMemoryCache()
       .AddMvcCore()
-      .AddAuthorization()
+      .AddAuthorization()      
       .AddNewtonsoftJson(options =>
       {
           options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
@@ -37,7 +38,11 @@ var app = builder.Build();
 
 app.UseRouting();
 app.UseCors("CorsPolicy");
+app.UseMetricServer();
+app.UseHttpMetrics();
 app.MapControllers();
+
+
 app.Run();
 
 public partial class Program { }
