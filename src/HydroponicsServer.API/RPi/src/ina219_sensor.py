@@ -40,12 +40,12 @@ def get_state():
     power_calc = bus_voltage * (current / 1000)
 
     # INA219 measure bus voltage on the load side. So PSU voltage = bus_voltage + shunt_voltage
-    print("Voltage (VIN+) : {:6.3f}   V".format(voltageIn))
-    print("Voltage (VIN-) : {:6.3f}   V".format(bus_voltage))
-    print("Shunt Voltage  : {:8.5f} V".format(shunt_voltage))
-    print("Shunt Current  : {:7.4f}  A".format(shunt_current))
-    print("Power Calc.    : {:8.5f} W".format(power_calc))
-    print("Power Register : {:6.3f}   W".format(power))
+    print("  Voltage (VIN+) : {:6.3f}   V".format(voltageIn))
+    print("  Voltage (VIN-) : {:6.3f}   V".format(bus_voltage))
+    print("  Shunt Voltage  : {:8.5f} V".format(shunt_voltage))
+    print("  Shunt Current  : {:7.4f}  A".format(shunt_current))
+    print("  Power Calc.    : {:8.5f} W".format(power_calc))
+    print("  Power Register : {:6.3f}   W".format(power))
     print("")
 
     # Check internal calculations haven't overflowed (doesn't detect ADC overflows)
