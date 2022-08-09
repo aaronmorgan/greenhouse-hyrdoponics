@@ -3,11 +3,8 @@
 import os
 import sys
 import datetime
-
+import glob
 import time
-import grovepi
-
-import RPi.GPIO as GPIO
 
 import rest_client
 import ds18b20_temperature_sensor
@@ -25,35 +22,26 @@ if polling_period_seconds is None:
     polling_period_seconds = 120
     print ("Error: SENSOR_POLLING_INTERVAL_SECONDS is not set, using default value of " + str(polling_period_seconds) + " seconds")
 
-# Temperature sensor.
-airTempSensorPort = 14
-grovepi.pinMode(airTempSensorPort, "INPUT")
-
-# Debugging LED
-led = 11
-
-GPIO.setmode(GPIO.BCM)
-GPIO.setup(led, GPIO.OUT, initial=GPIO.LOW)
+water_temp_sensor_device_folder = '28-01212e312bdd' # glob.glob(base_dir + '28-01212e312bdd')[0]
+air_temp_sensor_device_folder = '28-012062f1a501'
 
 while True:
     try:
-        time.sleep(polling_period_seconds)
         print('Gathering data...\n')
 
-        air_temp_sensor = grovepi.temp(airTempSensorPort, '1.2')
-        print('Room Temperature: {}'.format(str(air_temp_sensor)))
+        air_temp = ds18b20_temperature_sensor.read_temp(air_temp_sensor_device_folder)
+        print('  Air Temperature: {}'.format(air_temp))
 
-        water_temp = ds18b20_temperature_sensor.read_temp()
-        print('Water Temperature: {}'.format(water_temp))
+        water_temp = ds18b20_temperature_sensor.read_temp(water_temp_sensor_device_folder)
+        print('  Water Temperature: {}'.format(water_temp))
 
         print()
-        GPIO.output(led, GPIO.HIGH) # Turn the LED on while transmitting.
 
         rest_client.post(
             '{}/api/temperature/'.format(host_address),
             {
                 'time': datetime.datetime.now(),
-                'temperature': air_temp_sensor,
+                'temperature': air_temp,
                 'type': 'air',
                 'zone': 'Greenhouse'
             })
@@ -79,10 +67,10 @@ while True:
     except ValueError:
         print ("Math Error");
     except KeyboardInterrupt:
-        # grovepi.digitalWrite(led, LED_OFF)
         break
     except IOError:
         print("Error")
     finally:
-        GPIO.output(led, GPIO.LOW)
         print('--- END ---\n')
+        time.sleep(polling_period_seconds)
+
