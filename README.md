@@ -27,18 +27,21 @@ To activate the protocol on one or more custom pins use:
 dtoverlay=w1-gpio,gpiopin=4
 dtoverlay=w1-gpio,gpiopin=24
 ```
-</br>
+Then reboot the Pi for the changes to take effect, `sudo reboot`.
 
-### Listing Attached 1-Wire Devices
-Run the following command:
+Run the following commands to pick up the attached 1-Wire temperature sensors:
+``` bash
+sudo modprobe w1-gpio
+sudo modprobe q1-therm
+```
+
+Run the following to list the found devices:
 ``` bash
 ls /sys/bus/w1/devices/
 ```
-
-<sub><sup>Acknowledgements: https://www.raspberrypi-spy.co.uk/2018/02/enable-1-wire-interface-raspberry-pi/
 </br>
 
-## Reduce RPi Power Consumption
+## Reducing Power Consumption
 
 
 ### Disable on board Bluetooth
@@ -64,8 +67,8 @@ sudo hciconfig hci0 down
 ```
 </br>
 
-###  Disable on board lights
-The following settings when added to the `config.txt` will disable the Power, Activity and network activity lights. Reboot after applying these to have them take effect.
+###  Disable on board LEDs
+The following settings when added to the `config.txt` will disable the Power, Activity and network activity LEDs. Reboot after applying these to have them take effect.
 
 ``` bash
 # Turn off Power LED
@@ -79,8 +82,9 @@ dtparam=eth_led0=14
 # Turn off Ethernet LNK LED
 dtparam=eth_led1=14
 ```
-_Note: Values for the Pi 4 are slightly different._
-
-<sub><sup>Acknowledgements: https://smarthomescene.com/guides/how-to-disable-leds-on-raspberry-pi-3b-4b/
+_Note: These work for the RPi 3, but the Pi 4 'eth' ids are different._
 
 
+## Acknowledgements
+https://www.raspberrypi-spy.co.uk/2018/02/enable-1-wire-interface-raspberry-pi/
+https://smarthomescene.com/guides/how-to-disable-leds-on-raspberry-pi-3b-4b/

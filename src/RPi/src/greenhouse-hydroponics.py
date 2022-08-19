@@ -22,7 +22,7 @@ if polling_period_seconds is None:
     polling_period_seconds = 120
     print ("Error: SENSOR_POLLING_INTERVAL_SECONDS is not set, using default value of " + str(polling_period_seconds) + " seconds")
 
-water_temp_sensor_device_folder = '28-01212e312bdd' # glob.glob(base_dir + '28-01212e312bdd')[0]
+water_temp_sensor_device_folder = '28-01212e312bdd'
 air_temp_sensor_device_folder = '28-012062f1a501'
 
 while True:
