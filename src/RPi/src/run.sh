@@ -1,3 +1,5 @@
+#!/bin/bash
+
 export SENSOR_POLLING_INTERVAL_SECONDS="600"
 export HOST_ADDRESS="http://192.168.1.74:8083"
 
