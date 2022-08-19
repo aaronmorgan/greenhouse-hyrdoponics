@@ -1,4 +1,6 @@
-sudo apt update
+#!/bin/bash
+
+sudo apt-get update
 sudo apt upgrade -y
 
 sudo apt install -y git
