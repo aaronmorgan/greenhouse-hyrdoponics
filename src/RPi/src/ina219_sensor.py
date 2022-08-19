@@ -53,7 +53,7 @@ def get_state():
         print("Internal Math Overflow Detected!")
         print("")
         return
-    
+
     return {
         'voltageIn': voltageIn,
         'voltageOut': bus_voltage,

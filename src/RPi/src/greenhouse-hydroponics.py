@@ -27,7 +27,7 @@ air_temp_sensor_device_folder = '28-012062f1a501'
 
 while True:
     try:
-        print('Gathering data...\n')
+        print('{}: Gathering data...\n'.format(datetime.datetime.today()))
 
         air_temp = ds18b20_temperature_sensor.read_temp(air_temp_sensor_device_folder)
         print('  Air Temperature: {}'.format(air_temp))
