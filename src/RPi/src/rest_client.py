@@ -2,6 +2,9 @@ import os
 import json
 import requests
 import datetime
+import logging
+
+_logger = logging.getLogger(__name__)
 
 def dateTimeConverter(o):
     if isinstance(o, datetime.datetime):

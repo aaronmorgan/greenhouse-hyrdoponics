@@ -8,19 +8,22 @@
 import time
 import board
 from adafruit_ina219 import ADCResolution, BusVoltageRange, INA219
+import logging
+
+_logger = logging.getLogger(__name__)
 
 i2c_bus = board.I2C()
 
 ina219 = INA219(i2c_bus)
 
 # display some of the advanced field (just to test)
-print("Config register:")
-print("  bus_voltage_range:    0x%1X" % ina219.bus_voltage_range)
-print("  gain:                 0x%1X" % ina219.gain)
-print("  bus_adc_resolution:   0x%1X" % ina219.bus_adc_resolution)
-print("  shunt_adc_resolution: 0x%1X" % ina219.shunt_adc_resolution)
-print("  mode:                 0x%1X" % ina219.mode)
-print("")
+_logger.info("Config register:")
+_logger.info("  bus_voltage_range:    0x%1X" % ina219.bus_voltage_range)
+_logger.info("  gain:                 0x%1X" % ina219.gain)
+_logger.info("  bus_adc_resolution:   0x%1X" % ina219.bus_adc_resolution)
+_logger.info("  shunt_adc_resolution: 0x%1X" % ina219.shunt_adc_resolution)
+_logger.info("  mode:                 0x%1X" % ina219.mode)
+_logger.info("")
 
 # optional : change configuration to use 32 samples averaging for both bus voltage and shunt voltage
 ina219.bus_adc_resolution = ADCResolution.ADCRES_12BIT_32S
@@ -40,18 +43,18 @@ def get_state():
     power_calc = bus_voltage * (current / 1000)
 
     # INA219 measure bus voltage on the load side. So PSU voltage = bus_voltage + shunt_voltage
-    print("  Voltage (VIN+) : {:6.3f}   V".format(voltageIn))
-    print("  Voltage (VIN-) : {:6.3f}   V".format(bus_voltage))
-    print("  Shunt Voltage  : {:8.5f} V".format(shunt_voltage))
-    print("  Shunt Current  : {:7.4f}  A".format(shunt_current))
-    print("  Power Calc.    : {:8.5f} W".format(power_calc))
-    print("  Power Register : {:6.3f}   W".format(power))
-    print("")
+    _logger.info("  Voltage (VIN+) : {:6.3f}   V".format(voltageIn))
+    _logger.info("  Voltage (VIN-) : {:6.3f}   V".format(bus_voltage))
+    _logger.info("  Shunt Voltage  : {:8.5f} V".format(shunt_voltage))
+    _logger.info("  Shunt Current  : {:7.4f}  A".format(shunt_current))
+    _logger.info("  Power Calc.    : {:8.5f} W".format(power_calc))
+    _logger.info("  Power Register : {:6.3f}   W".format(power))
+    _logger.info("")
 
     # Check internal calculations haven't overflowed (doesn't detect ADC overflows)
     if ina219.overflow:
-        print("Internal Math Overflow Detected!")
-        print("")
+        _logger.info("Internal Math Overflow Detected!")
+        _logger.info("")
         return
 
     return {

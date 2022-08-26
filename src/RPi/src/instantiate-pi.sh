@@ -10,7 +10,6 @@ sudo apt install -y git
 sudo apt install -y python3
 sudo apt install -y python3-pip
 sudo pip3 install Adafruit-Blinka
-#sudo pip3 install pi-ina219
 sudo pip3 install adafruit-circuitpython-ina219
 
 # Enable the I2C port (required for INA219 sensor).

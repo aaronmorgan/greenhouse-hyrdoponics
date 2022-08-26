@@ -1,0 +1,17 @@
+[Unit]
+Description=Greenhouse Hydroponics Service
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=30
+User=aaron
+ExecStart=/home/aaron/greenhouse/greenhouse-hydroponics.sh
+
+# To avoid "cannot execute binary file" when the service starts run:
+# $ chmod +x /home/aaron/greenhouse/greenhouse-hydroponics.sh
+
+[Install]
+WantedBy=multi-user.target
