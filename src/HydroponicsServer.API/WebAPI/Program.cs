@@ -1,11 +1,23 @@
 ﻿using DAL.PostgresSQL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Prometheus;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .CreateLogger();
+
+builder.Logging
+    .ClearProviders()
+    .AddSerilog(logger);
+
+builder.Services.AddSingleton(logger);
 
 builder.Host.ConfigureServices((context, services) =>
 {
@@ -21,7 +33,7 @@ builder.Host.ConfigureServices((context, services) =>
     services
       .AddMemoryCache()
       .AddMvcCore()
-      .AddAuthorization()      
+      .AddAuthorization()
       .AddNewtonsoftJson(options =>
       {
           options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();

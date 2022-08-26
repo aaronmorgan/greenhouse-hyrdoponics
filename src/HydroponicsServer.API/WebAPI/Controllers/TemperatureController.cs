@@ -2,6 +2,8 @@
 using HydroponicsServer.Models;
 using HydroponicsServer.WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Prometheus;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,7 @@ namespace HydroponicsServer.Controllers
     [ApiController]
     public class TemperatureController : ControllerBase
     {
+        private readonly ILogger<TemperatureController> _logger;
         private readonly ITemperatureRepository _db;
 
         private static readonly DateTime UnixEpoch = new(1970, 1, 1);
@@ -21,8 +24,9 @@ namespace HydroponicsServer.Controllers
         private static readonly Gauge AirTemperature = Metrics.CreateGauge("air_temperature", "Current air temperature");
         private static readonly Gauge WaterTemperature = Metrics.CreateGauge("water_temperature", "Current temperature of the water reservoir");
 
-        public TemperatureController(ITemperatureRepository databaseAgent)
+        public TemperatureController(ILogger<TemperatureController> logger, ITemperatureRepository databaseAgent)
         {
+            _logger = logger;
             _db = databaseAgent;
         }
 
@@ -32,6 +36,8 @@ namespace HydroponicsServer.Controllers
         [HttpPost]
         public async Task<ActionResult<TemperatureRecording>> AddTemperatureRecording([FromBody] TemperatureRequestDto requestObj)
         {
+            _logger.LogInformation("{functionName}, Request received='{request}'", nameof(AddTemperatureRecording), JsonConvert.SerializeObject(requestObj));
+
             var time = GetTime(DateTime.Parse(requestObj.Time));
 
             string tableName;

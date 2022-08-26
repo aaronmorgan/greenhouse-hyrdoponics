@@ -2,6 +2,8 @@
 using HydroponicsServer.Models;
 using HydroponicsServer.WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Prometheus;
 using System;
 using System.Threading.Tasks;
@@ -12,6 +14,7 @@ namespace HydroponicsServer.Controllers
     [ApiController]
     public class INA219Controller : ControllerBase
     {
+        private readonly ILogger<INA219Controller> _logger;
         private readonly IINA219Repository _db;
 
         private static readonly DateTime UnixEpoch = new(1970, 1, 1);
@@ -24,14 +27,17 @@ namespace HydroponicsServer.Controllers
         private static readonly Gauge PowerCalc = Metrics.CreateGauge("power_calc", "");
         private static readonly Gauge PowerRegister = Metrics.CreateGauge("power_register", "");
 
-        public INA219Controller(IINA219Repository databaseAgent)
+        public INA219Controller(ILogger<INA219Controller> logger, IINA219Repository databaseAgent)
         {
+            _logger = logger;
             _db = databaseAgent;
         }
 
         [HttpPost]
         public async Task<ActionResult<TemperatureRecording>> AddTemperatureRecording([FromBody] INA219RequestDto requestObj)
         {
+            _logger.LogInformation("{functionName}, Request received='{request}'", nameof(AddTemperatureRecording), JsonConvert.SerializeObject(requestObj));
+
             var time = GetTime(DateTime.Parse(requestObj.Time));
 
             VoltageIn.Set(requestObj.VoltageIn);
