@@ -27,6 +27,8 @@ namespace HydroponicsServer.Controllers
         private static readonly Gauge PowerCalc = Metrics.CreateGauge("power_calc", "");
         private static readonly Gauge PowerRegister = Metrics.CreateGauge("power_register", "");
 
+        private static readonly Gauge SolarPanelCharging = Metrics.CreateGauge("hy_solar_panel_charging", "");
+
         public INA219Controller(ILogger<INA219Controller> logger, IINA219Repository databaseAgent)
         {
             _logger = logger;
@@ -46,6 +48,8 @@ namespace HydroponicsServer.Controllers
             ShuntCurrent.Set(requestObj.ShuntCurrent);
             PowerCalc.Set(requestObj.PowerCalc);
             PowerRegister.Set(requestObj.PowerRegister);
+
+            SolarPanelCharging.Set(Convert.ToDouble(requestObj.SolarPanelCharging));
 
             await _db.Add(
                 Table.INA219_RECORDINGS,

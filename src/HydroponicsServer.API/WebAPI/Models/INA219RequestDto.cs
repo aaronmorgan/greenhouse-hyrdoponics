@@ -9,5 +9,7 @@
         public float ShuntCurrent;
         public float PowerCalc;
         public float PowerRegister;
+
+        public bool SolarPanelCharging;
     }
 }
