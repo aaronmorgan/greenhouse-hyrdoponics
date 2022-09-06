@@ -18,7 +18,7 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Restore dependencies
-      run: dotnet restore .\src\HydroponicsServer.API\
+      run: dotnet restore .\src\HydroponicsServer.API\WebAPI\HydroponicsServer.WebAPI.csprojs
     - name: Build
       run: dotnet build .\src\HydroponicsServer.API\ --no-restore
     - name: Test
