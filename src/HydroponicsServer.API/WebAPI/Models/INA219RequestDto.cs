@@ -11,5 +11,6 @@
         public float PowerRegister;
 
         public bool SolarPanelCharging;
+        public bool WaterPumpOn;
     }
 }
