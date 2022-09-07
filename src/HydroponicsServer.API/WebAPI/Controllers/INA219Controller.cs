@@ -1,12 +1,10 @@
-﻿using DAL.PostgresSQL;
-using HydroponicsServer.Models;
+﻿using HydroponicsServer.Models;
 using HydroponicsServer.WebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Prometheus;
 using System;
-using System.Threading.Tasks;
 
 namespace HydroponicsServer.Controllers
 {
@@ -15,7 +13,6 @@ namespace HydroponicsServer.Controllers
     public class INA219Controller : ControllerBase
     {
         private readonly ILogger<INA219Controller> _logger;
-        private readonly IINA219Repository _db;
 
         private static readonly DateTime UnixEpoch = new(1970, 1, 1);
         public static long GetTime(DateTime dateTime) => (long)(dateTime.ToUniversalTime() - UnixEpoch).TotalMilliseconds;
@@ -30,14 +27,13 @@ namespace HydroponicsServer.Controllers
         private static readonly Gauge SolarPanelCharging = Metrics.CreateGauge("hy_solar_panel_charging", "");
         private static readonly Gauge WaterPumpOn = Metrics.CreateGauge("hy_water_pump_on", "");
 
-        public INA219Controller(ILogger<INA219Controller> logger, IINA219Repository databaseAgent)
+        public INA219Controller(ILogger<INA219Controller> logger)
         {
             _logger = logger;
-            _db = databaseAgent;
         }
 
         [HttpPost]
-        public async Task<ActionResult<TemperatureRecording>> AddTemperatureRecording([FromBody] INA219RequestDto requestObj)
+        public ActionResult<TemperatureRecording> AddTemperatureRecording([FromBody] INA219RequestDto requestObj)
         {
             _logger.LogInformation("{functionName}, Request received='{request}'", nameof(AddTemperatureRecording), JsonConvert.SerializeObject(requestObj));
 
@@ -52,17 +48,6 @@ namespace HydroponicsServer.Controllers
 
             SolarPanelCharging.Set(Convert.ToDouble(requestObj.SolarPanelCharging));
             WaterPumpOn.Set(Convert.ToDouble(requestObj.WaterPumpOn));
-
-            await _db.Add(
-                Table.INA219_RECORDINGS,
-                new INA219Recording(
-                    time,
-                    requestObj.VoltageIn,
-                    requestObj.VoltageOut,
-                    requestObj.ShuntVoltage,
-                    requestObj.ShuntCurrent,
-                    requestObj.PowerCalc,
-                    requestObj.PowerRegister));
 
             return Ok();
         }
