@@ -41,9 +41,9 @@ builder.Host.ConfigureServices((context, services) =>
           options.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
       });
 
-    services
-        .AddSingleton<ITemperatureRepository, TemperatureRepository>()
-        .AddSingleton<IINA219Repository, INA219Repository>();
+    //services
+    //    .AddSingleton<ITemperatureRepository, TemperatureRepository>()
+    //    .AddSingleton<IINA219Repository, INA219Repository>();
 });
 
 var app = builder.Build();
