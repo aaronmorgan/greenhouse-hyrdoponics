@@ -1,6 +1,14 @@
 # greenhouse-hyrdoponics
 An experiment in automation.
 
+<img
+  src="./resources/grafana-dashboard.png"
+  alt="Grafana Dashboard"
+  title="Grafana Dashboard"
+  style="display: inline-block">
+<br/>
+<br/>
+
 
 # Background Information on Device Configuration
 
